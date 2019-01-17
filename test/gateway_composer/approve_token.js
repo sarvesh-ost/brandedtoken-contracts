@@ -99,7 +99,10 @@ contract('GatewayComposer::approveToken', async (accounts) => {
                 amount,
                 { from: owner },
             );
-
+            utils.logReceipt(transactionResponse.receipt, 'Approve Gateway'
+            + ' composer ');
+            utils.printGasStatistics();
+            utils.clearReceipts();
             assert.strictEqual(transactionResponse.receipt.status, true);
 
             const toAllowanceAfter = await valueToken.allowance.call(

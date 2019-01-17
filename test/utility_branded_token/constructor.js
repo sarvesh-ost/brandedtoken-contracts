@@ -12,68 +12,75 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const utils = require('../test_lib/utils'),
-  UtilityBrandedToken = artifacts.require('UtilityBrandedToken'),
-  EIP20TokenMock = artifacts.require('EIP20TokenMock'),
-  AccountProvider =  utils.AccountProvider;
+const utils = require('../test_lib/utils');
+
+
+const UtilityBrandedToken = artifacts.require('UtilityBrandedToken');
+
+
+const EIP20TokenMock = artifacts.require('EIP20TokenMock');
+
+
+const AccountProvider = utils.AccountProvider;
 
 contract('UtilityBrandedToken::constructor', async (accounts) => {
+    let brandedToken;
 
-  let brandedToken,
-    organization,
-    accountProvider;
-  
-  const SYMBOL = "MOCK",
-    NAME = "Mock Token",
-    DECIMALS = "5";
 
-  beforeEach(async function() {
+    let organization;
 
-    accountProvider = new AccountProvider(accounts);
-    organization = accountProvider.get();
-    brandedToken = await EIP20TokenMock.new(
-      SYMBOL,
-      NAME,
-      DECIMALS,
-      { from: organization },
-    );
 
-  });
+    let accountProvider;
 
-  describe('Negative Tests', async () => {
+    const SYMBOL = 'MOCK';
 
-    it('Reverts if null address is passed as organization', async () => {
 
-      utils.expectRevert(UtilityBrandedToken.new(
-        utils.NULL_ADDRESS,
-        SYMBOL,
-        NAME,
-        DECIMALS,
-        organization,
-        { from: organization }),
-        'Token address is null',
-        'Token address is null.',
-      );
+    const NAME = 'Mock Token';
 
-    });
 
-  });
+    const DECIMALS = '5';
 
-  describe('Storage', async () => {
-
-    it('Checks the branded token address', async () => {
-
-      let utilityBrandedToken = await UtilityBrandedToken.new(
-            brandedToken.address,
+    beforeEach(async () => {
+        accountProvider = new AccountProvider(accounts);
+        organization = accountProvider.get();
+        brandedToken = await EIP20TokenMock.new(
             SYMBOL,
             NAME,
             DECIMALS,
-            organization,
             { from: organization },
-            );
-
-      assert.equal(await utilityBrandedToken.brandedToken.call(), brandedToken.address);
-
+        );
     });
-  });
+
+    describe('Negative Tests', async () => {
+        it('Reverts if null address is passed as organization', async () => {
+            utils.expectRevert(UtilityBrandedToken.new(
+                utils.NULL_ADDRESS,
+                SYMBOL,
+                NAME,
+                DECIMALS,
+                organization,
+                { from: organization },
+            ),
+            'Token address is null',
+            'Token address is null.');
+        });
+    });
+
+    describe('Storage', async () => {
+        it('Checks the branded token address', async () => {
+            const utilityBrandedToken = await UtilityBrandedToken.new(
+                brandedToken.address,
+                SYMBOL,
+                NAME,
+                DECIMALS,
+                organization,
+                { from: organization },
+            );
+            const receipt = await web3.eth.getTransactionReceipt(utilityBrandedToken.transactionHash);
+            utils.logReceipt(receipt, 'Utlity token deployment');
+            utils.printGasStatistics();
+            utils.clearReceipts();
+            assert.equal(await utilityBrandedToken.brandedToken.call(), brandedToken.address);
+        });
+    });
 });

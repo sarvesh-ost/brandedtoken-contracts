@@ -88,6 +88,11 @@ contract('GatewayComposer::constructor', async (accounts) => {
                 { from: deployer },
             );
 
+            const receipt = await web3.eth.getTransactionReceipt(gatewayComposer.transactionHash);
+            utils.logReceipt(receipt, 'Gateway componser deployment');
+            utils.printGasStatistics();
+            utils.clearReceipts();
+
             assert.strictEqual(await gatewayComposer.owner.call(), owner);
             assert.strictEqual(await gatewayComposer.valueToken.call(), valueToken);
             assert.strictEqual(await gatewayComposer.brandedToken.call(), brandedToken);

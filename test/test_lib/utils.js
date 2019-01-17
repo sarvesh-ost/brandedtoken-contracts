@@ -95,3 +95,41 @@ module.exports.AccountProvider = class AccountProvider {
         return account;
     }
 };
+
+
+/** Tracking Gas Usage. */
+const receipts = [];
+
+
+/** Log receipt. */
+module.exports.logReceipt = (receipt, description) => {
+    receipts.push({
+        receipt,
+        description,
+        response: null,
+    });
+},
+
+/** Print gas statistics. */
+module.exports.printGasStatistics = () => {
+    let totalGasUsed = 0;
+
+    console.log('      -----------------------------------------------------');
+    console.log('      Report gas usage\n');
+
+    for (i = 0; i < receipts.length; i++) {
+        const entry = receipts[i];
+
+        totalGasUsed += entry.receipt.gasUsed;
+
+        console.log(`      ${entry.description.padEnd(45)}${entry.receipt.gasUsed}`);
+    }
+
+    console.log('      -----------------------------------------------------');
+    console.log(`      ${'Total gas logged: '.padEnd(45)}${totalGasUsed}\n`);
+},
+
+/** Clear receipt. */
+module.exports.clearReceipts = () => {
+    receipts.splice(0, receipts.length);
+};

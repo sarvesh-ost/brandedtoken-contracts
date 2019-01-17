@@ -91,6 +91,10 @@ contract('BrandedToken::constructor', async () => {
                 organization,
             );
 
+          let receipt = await web3.eth.getTransactionReceipt(brandedToken.transactionHash);
+          utils.logReceipt(receipt, "Branded token deployment");
+          utils.printGasStatistics();
+          utils.clearReceipts();
             assert.strictEqual(
                 (await brandedToken.valueToken()),
                 valueToken,

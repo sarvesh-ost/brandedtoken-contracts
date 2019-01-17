@@ -264,7 +264,7 @@ contract('GatewayComposer::requestStake', async (accounts) => {
                 nonce,
                 { from: owner },
             );
-            await gatewayComposer.requestStake(
+            const tx = await gatewayComposer.requestStake(
                 stakeAmount,
                 mintAmount,
                 gateway,
@@ -274,6 +274,9 @@ contract('GatewayComposer::requestStake', async (accounts) => {
                 nonce,
                 { from: owner },
             );
+            utils.logReceipt(tx.receipt, 'Request stake');
+            utils.printGasStatistics();
+            utils.clearReceipts();
 
             // Validated that stakeRequestHash is present in BT.stakeRequestHashes
             const stakeRequest = await brandedToken.stakeRequests.call(stakeRequestHash);

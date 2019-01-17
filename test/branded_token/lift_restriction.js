@@ -14,6 +14,7 @@
 
 const { AccountProvider } = require('../test_lib/utils.js');
 const brandedTokenUtils = require('./utils');
+const Utils = require('../test_lib/utils.js');
 
 contract('BrandedToken::liftRestriction', async () => {
     // TODO: add negative tests
@@ -38,10 +39,15 @@ contract('BrandedToken::liftRestriction', async () => {
                 ),
             );
 
-            await brandedToken.liftRestriction(
+          const tx = await brandedToken.liftRestriction(
                 restrictionLifted,
                 { from: worker },
             );
+
+          Utils.logReceipt(tx.receipt, 'BT.liftRestriction()');
+          Utils.printGasStatistics();
+          Utils.clearReceipts();
+
 
             /* eslint-disable no-restricted-syntax, no-await-in-loop */
             for (const actor of restrictionLifted) {
